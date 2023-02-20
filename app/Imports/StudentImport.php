@@ -5,9 +5,20 @@ namespace App\Imports;
 use App\Models\Student;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class StudentImport implements ToModel, WithHeadingRow
+class StudentImport implements ToModel, WithHeadingRow, WithValidation, WithHeadings
 {
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|unique:students',
+            'card' => 'required',
+            'phone' => 'required',
+            'country' => 'required',
+        ];
+    }
     /**
     * @param array $row
     *

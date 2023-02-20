@@ -7,6 +7,7 @@ use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Student;
 use App\Imports\StudentImport;
+use App\Exports\StudentExport;
 
 class Import extends Component
 {
@@ -24,6 +25,11 @@ class Import extends Component
         // dd($this->file);
 
         session()->flash('message', 'Excel file have been impoted');
+    }
+
+    public function export()
+    {
+        return Excel::download(new StudentExport, 'students.xlsx');
     }
 
     public function render()
