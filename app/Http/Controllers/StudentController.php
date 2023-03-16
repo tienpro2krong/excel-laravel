@@ -4,23 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Imports\StudentImport;
+use Maatwebsite\Excel\Facades\Excel;
+
+
 
 class StudentController extends Controller
 {
     public function index()
     {
-        // $students = Student::factory()->count(3)->make();
-        return view('welcome');
+        $students = Student::all();
+        return view('welcome', compact('students'));
     }
 
-    public function example()
+    public function import(Request $request)
     {
-        $fileName = 'example.xlsx';
-        $path = public_path('file/'.$fileName);
-        // dd($path);
-        return response()->download($path, $fileName, [
-            'Content-Type' => '',
-            'Content-Disposition' => 'inline; filename="' . $fileName . '"'
-        ]);
+        Excel::import(new StudentImport, $request->file('diploma_file'));
+        session()->flash('message', 'Excel file have been impoted');
+        return back();
     }
+
+    // public function example()
+    // {
+    //     $fileName = 'example.xlsx';
+    //     $path = public_path('file/'.$fileName);
+    //     // dd($path);
+    //     return response()->download($path, $fileName, [
+    //         'Content-Type' => '',
+    //         'Content-Disposition' => 'inline; filename="' . $fileName . '"'
+    //     ]);
+    // }
 }

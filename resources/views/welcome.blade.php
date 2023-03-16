@@ -16,32 +16,93 @@
     </script>
     <!-- Styles -->
     <style>
-    body {
-        font-family: 'Nunito';
-    }
+        body {
+            font-family: 'Nunito';
+        }
     </style>
     @livewireStyles
 </head>
 
-<body class="antialiased">
-    <div
-        class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
-        @if (Route::has('login'))
-        <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
-            @auth
-            <a href="{{ url('/home') }}" class="text-sm text-gray-700 underline">Home</a>
-            @else
-            <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Login</a>
+<body>
+    @if ($errors->any())
+        <h5 style="color:brown">Xem loi hien thi trong file excel cua ban</h5>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    @endif
+    <div>
+        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+            <div class="container mt-4">
+                <li class="list-group-item">
 
-            @if (Route::has('register'))
-            <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>
-            @endif
-            @endif
+                    <form action="/import" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white" id="exampleModalLabel">Import Excel</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">File excel</label>
+                                    <input type="file" name="diploma_file" accept=".xlsx, .xls, .csv" required
+                                        class="form-control @error('file') is-invalid @enderror">
+                                    <small>Note <b class="text-danger">*</b> : Type file have xlsl, xls</small>
+                                    @error('file')
+                                        <div id="validationServer03Feedback" class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+
+                @if (session()->has('message'))
+                    <div class="alert alert-success">
+                        {{ session('message') }}
+                    </div>
+                @endif
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Country</th>
+                            <th scope="col">Email</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($students as $student)
+                            <tr>
+                                <th scope="row">{{ $loop->iteration }}</th>
+                                <td>{{ $student->name }}</td>
+                                <td>{{ $student->gender }}</td>
+                                <td>{{ $student->phone }}</td>
+                                <th>{{ $student->country }}</th>
+                                <th>{{ $student->email }}</th>
+
+                            </tr>
+                        @endforeach
+
+                    </tbody>
+                </table>
+            </div>
         </div>
-        @endif
+
     </div>
-    @livewire('student.import')
-    @livewireScripts
 </body>
 
 </html>

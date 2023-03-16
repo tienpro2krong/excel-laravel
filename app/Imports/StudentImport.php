@@ -3,24 +3,41 @@
 namespace App\Imports;
 
 use App\Models\Student;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class StudentImport implements ToModel, WithHeadingRow
+class StudentImport implements ToCollection, WithHeadingRow, WithValidation
 {
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
+    * @param Collection $collection
     */
-    public function model(array $row)
+    public function collection(Collection $rows)
     {
-        // dd($row);
-        return new Student([
-            'name' => $row['name'],
-            'card' => $row['card'],
-            'phone' => $row['phone'],
-            'country' => $row['country'],
-        ]);
+        foreach ($rows as $row)
+        {
+            $data = [
+                'name' => $row['name'],
+                'gender' => $row['gender'],
+                'phone' => $row['phone'],
+                'country' => $row['country'],
+                'email' => $row['email']
+            ];
+            Student::create($data);
+
+            
+        }
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name'=>'required',
+            'gender' => 'required',
+            'phone' => 'required',
+            'country' => 'required',
+            'email' => 'required|unique:students,email',
+        ];    
     }
 }

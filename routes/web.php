@@ -19,4 +19,6 @@ use App\Http\Controllers\StudentController;
 // });
 
 Route::get('/', [StudentController::class, 'index']);
-Route::get('/example', [StudentController::class, 'example'])->name('example');
+Route::post('/import', [StudentController::class, 'import']);
+
+// Route::get('/example', [StudentController::class, 'example'])->name('example');
